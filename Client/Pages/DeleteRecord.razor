@@ -1,0 +1,83 @@
+﻿@page "/deleteRecord/{No}"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorWASM_SignalR.Shared
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h2>Delete</h2>
+<p>Confirm to delete record No: <b> @No</b></p>
+<br />
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>DateIn</td>
+            <td>@record.DateIn</td>
+        </tr>
+        <tr>
+            <td>SA_SN</td>
+            <td>@record.SA_SN</td>
+        </tr>
+        <tr>
+            <td>SA_PN</td>
+            <td>@record.SA_PN</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <input type="button" class="btn btn-primary" @onclick="@Delete" value="Delete" />
+        <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+    </div>
+</div>
+
+
+@code {
+
+
+    [Parameter]
+    public string No { get; set; }
+
+    RecordDetails record = new RecordDetails();
+
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        record = await Http.GetFromJsonAsync<RecordDetails>("api/RecordDetails/" + No);
+
+            hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+        .Build();
+
+        await hubConnection.StartAsync();
+
+    }
+
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+
+    protected async Task Delete()
+    {
+        await Http.DeleteAsync("api/RecordDetails/" + No);
+        if (IsConnected) await SendMessage();
+        NavigationManager.NavigateTo("listRecord");
+
+    }
+
+
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("listRecord");
+
+    }
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
+}

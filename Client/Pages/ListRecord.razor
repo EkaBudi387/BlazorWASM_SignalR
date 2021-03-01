@@ -1,0 +1,92 @@
+﻿@page "/listRecord"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorWASM_SignalR.Shared
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h2>Record Details</h2>
+<p>
+    <a href="/addRecord">Create New Record</a>
+</p>
+
+@if (listRecord == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>DateIn</th>
+                <th>SA_SN</th>
+                <th>SA_PN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in listRecord)
+            {
+                <tr>
+                    <td>@record.DateIn</td>
+                    <td>@record.SA_SN</td>
+                    <td>@record.SA_PN</td>
+                    <td>
+                        <a href="/editRecord/@record.No">Edit</a>
+                        <a href="/deleteRecord/@record.No">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    RecordDetails[] listRecord;
+
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+        .Build();
+
+        hubConnection.On("ReceiveMessage", () =>
+        {
+
+            CallLoadData();
+            StateHasChanged();
+
+        });
+
+        await hubConnection.StartAsync();
+        await LoadData();
+
+    }
+
+    private void CallLoadData()
+    {
+        Task.Run(async () =>
+        {
+            await LoadData();
+        });
+    }
+
+
+    protected async Task LoadData()
+    {
+
+        listRecord = await Http.GetFromJsonAsync<RecordDetails[]>("api/RecordDetails");
+        StateHasChanged();
+
+    }
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
+}
