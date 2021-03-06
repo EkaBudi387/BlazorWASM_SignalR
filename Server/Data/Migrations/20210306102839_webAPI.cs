@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlazorWASM_SignalR.Server.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class webAPI : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

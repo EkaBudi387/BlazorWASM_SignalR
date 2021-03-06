@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWASM_SignalR.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210301140525_initial")]
-    partial class initial
+    [Migration("20210306102839_webAPI")]
+    partial class webAPI
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
