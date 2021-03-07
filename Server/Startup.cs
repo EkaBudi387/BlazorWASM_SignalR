@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using BlazorWASM_SignalR.Server.Hubs;
+using BlazorWASM_SignalR.Server.Services;
 
 namespace BlazorWASM_SignalR.Server
 {
@@ -28,6 +29,9 @@ namespace BlazorWASM_SignalR.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR();
+
+            services.AddSingleton<IMySql, MySQLServices>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));

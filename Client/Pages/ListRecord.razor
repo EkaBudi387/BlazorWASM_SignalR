@@ -23,20 +23,35 @@ else
                 <th>DateIn</th>
                 <th>SA_SN</th>
                 <th>SA_PN</th>
+                <th>Defect Item</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var record in listRecord)
             {
-                <tr>
-                    <td>@record.DateIn</td>
-                    <td>@record.SA_SN</td>
-                    <td> </td>
-                    <td>
-                        <a href="/editRecord/@record.No">Edit</a>
-                        <a href="/deleteRecord/@record.No">Delete</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>@record.DateIn</td>
+                <td>@record.SA_SN</td>
+
+
+                @foreach (var _ in modelList)
+                {
+                    if (_.SA_SN == record.SA_SN)
+                    {
+
+                        <td>@_.SA_PN</td>
+                        <td>@_.State</td>
+
+                        break;
+                    }
+                }
+
+
+                <td>
+                    <a href="/editRecord/@record.No">Edit</a>
+                    <a href="/deleteRecord/@record.No">Delete</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -46,10 +61,15 @@ else
 
     RecordDetails[] listRecord;
 
+    SharedModelMySql[] modelList;
+
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
+
+        modelList = await Http.GetFromJsonAsync<SharedModelMySql[]>("api/MySql/ModelList");
+
         hubConnection = new HubConnectionBuilder()
         .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
         .Build();
