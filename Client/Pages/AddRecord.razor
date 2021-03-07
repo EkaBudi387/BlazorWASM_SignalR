@@ -13,10 +13,6 @@
     <div class="row">
         <div class="col-md-8">
             <div class="form-group">
-                <label for="DateIn" class="control-label">DateIn</label>
-                <input for="DateIn" class="form-control" @bind="@record.DateIn" />
-            </div>
-            <div class="form-group">
                 <label for="SA_SN" class="control-label">SA_SN</label>
                 <input for="SA_SN" class="form-control" @bind="@record.SA_SN" />
             </div>
@@ -56,6 +52,7 @@
 
     protected async Task CreateRecord()
     {
+        record.DateIn = DateTime.Now;
         await Http.PostAsJsonAsync("api/RecordDetails", record);
         if (IsConnected) await SendMessage();
         NavigationManager.NavigateTo("listRecord");
