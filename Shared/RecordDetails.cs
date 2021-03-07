@@ -18,8 +18,6 @@ namespace BlazorWASM_SignalR.Shared
 
         public string SA_SN { get; set; }
 
-        public string SA_PN { get; set; }
-
 
     }
 }
