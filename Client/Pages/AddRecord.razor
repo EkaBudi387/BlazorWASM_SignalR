@@ -6,104 +6,72 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-    <style>
-        .select-box{
-            width: 640px;
-        }
-        .select-box select{
-            height: 38px;
-            padding: 10px 15px;
-            line-height: 18px;
-            font-size: 14px;
-            width: 100%;
-            border:1px solid #ccc;
-            border-radius: 4px;
-            -webkit-appearance:none;
-        }
 
-        .select-box:after{
-            content: "";
-            position: absolute;
-        }
+<h2>Create Record</h2>
+<hr />
 
-    </style>
-
-    <h2>Create Record</h2>
-    <hr />
-
-    <form onsubmit="return false">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label for="SA_SN" class="control-label">SA_SN</label>
-                    <input for="SA_SN" class="form-control" @bind="@record.SA_SN" />
-                </div>
-                <div class="form-group">
-                    <label for="Detail Defect" class="control-label">Detail Defect</label>
-                    <div class="select-box">
-                        <select @bind="@record.Detail_Defect">
-                            <option></option>
-                            <option>Wire Lifted</option>
-                            <option>Pad Lifted</option>
-                            <option>Wire Broken</option>
-                        </select>
-                    </div>
-                </div>
+<form onsubmit="return false">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="SA_SN" class="control-label">SA_SN</label>
+                <input for="SA_SN" class="form-control" @bind="@record.SA_SN" />
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group"><br/>
-                    <input type="button" class="btn btn-primary" @onclick="@CreateRecord" value="Save" />
-                    <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <br />
+                <input type="button" class="btn btn-primary" @onclick="@CreateRecord" value="Save" />
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
             </div>
         </div>
-    </form>
+    </div>
+</form>
+
+@code {
+
+    RecordDetails record = new RecordDetails();
+
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+        .Build();
+
+        await hubConnection.StartAsync();
+
+    }
+
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
 
 
+    protected async Task CreateRecord()
+    {
+        record.DateIn = DateTime.Now;
+        await Http.PostAsJsonAsync("api/RecordDetails", record);
+        if (IsConnected) await SendMessage();
+        NavigationManager.NavigateTo("listRecord");
 
-    @code {
-
-        RecordDetails record = new RecordDetails();
-
-        private HubConnection hubConnection;
-
-        protected override async Task OnInitializedAsync()
-        {
-            hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
-            .Build();
-
-            await hubConnection.StartAsync();
-
-        }
-
-        public bool IsConnected =>
-            hubConnection.State == HubConnectionState.Connected;
+    }
 
 
-        protected async Task CreateRecord()
-        {
-            record.DateIn = DateTime.Now;
-            await Http.PostAsJsonAsync("api/RecordDetails", record);
-            if (IsConnected) await SendMessage();
-            NavigationManager.NavigateTo("listRecord");
-
-        }
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
 
 
-        Task SendMessage() => hubConnection.SendAsync("SendMessage");
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("listRecord");
 
+    }
 
-        void Cancel()
-        {
-            NavigationManager.NavigateTo("listRecord");
-
-        }
-
-        public void Dispose()
-        {
-            _ = hubConnection.DisposeAsync();
-        }
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
     }

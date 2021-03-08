@@ -9,6 +9,28 @@
 <h2>Edit Record</h2>
 <hr />
 
+<style>
+        .select-box {
+            width: 640px;
+        }
+
+            .select-box select {
+                height: 38px;
+                padding: 10px 15px;
+                line-height: 18px;
+                font-size: 15px;
+                width: 100%;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                -webkit-appearance: none;
+            }
+
+            .select-box:after {
+                content: "";
+                position: absolute;
+            }
+    </style>
+
 <form>
     <div class="row">
         <div class="col-md-8">
@@ -20,8 +42,28 @@
                 <label for="SA_SN" class="control-label">SA_SN</label>
                 <input for="SA_SN" class="form-control" @bind="@record.SA_SN" />
             </div>
+            <div class="form-group">
+                <label for="Detail Defect" class="control-label">Detail Defect</label>
+            </div>
         </div>
     </div>
+    @if (defectLists == null)
+    {
+
+    }
+    else
+    {
+        <div class="select-box">
+            <select @bind="@record.Detail_Defect">
+                <option></option>
+                @foreach (var _ in defectLists)
+                {
+                    <option>@_.DetailDefect</option>
+                }
+            </select>
+        </div>
+    }
+    <br />
     <div class="row">
         <div class="form-group">
             <input type="button" class="btn btn-primary" @onclick="@UpdateRecord" value="Update" />
@@ -36,17 +78,21 @@
     [Parameter]
     public string No { get; set; }
 
+    SharedDetailDefectList[] defectLists;
+
     RecordDetails record = new RecordDetails();
 
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
+        defectLists = await Http.GetFromJsonAsync<SharedDetailDefectList[]>("api/SharedDetailDefectLists");
+
         record = await Http.GetFromJsonAsync<RecordDetails>("api/RecordDetails/" + No);
 
         hubConnection = new HubConnectionBuilder()
-    .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
-    .Build();
+        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+        .Build();
 
         await hubConnection.StartAsync();
 

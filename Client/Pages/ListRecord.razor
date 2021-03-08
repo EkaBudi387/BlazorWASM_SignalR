@@ -30,29 +30,29 @@ else
         <tbody>
             @foreach (var record in listRecord)
             {
-            <tr>
-                <td>@record.DateIn</td>
-                <td>@record.SA_SN</td>
+                <tr>
+                    <td>@record.DateIn</td>
+                    <td>@record.SA_SN</td>
 
 
-                @foreach (var _ in modelList)
-                {
-                    if (_.SA_SN == record.SA_SN)
+                    @foreach (var _ in modelList)
                     {
+                        if (_.SA_SN == record.SA_SN)
+                        {
 
-                        <td>@_.SA_PN</td>
-                        <td>@_.State</td>
+                            <td>@_.SA_PN</td>
+                            <td>@_.State</td>
 
-                        break;
+                            break;
+                        }
                     }
-                }
-                <td>@record.Detail_Defect</td>
+                    <td>@record.Detail_Defect</td>
 
-                <td>
-                    <a href="/editRecord/@record.No">Edit</a>
-                    <a href="/deleteRecord/@record.No">Delete</a>
-                </td>
-            </tr>
+                    <td>
+                        <a href="/editRecord/@record.No">Edit</a>
+                        <a href="/deleteRecord/@record.No">Delete</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -61,6 +61,8 @@ else
 @code {
 
     RecordDetails[] listRecord;
+
+    SharedDetailDefectList[] defectLists;
 
     SharedModelMySql[] modelList;
 
@@ -71,9 +73,11 @@ else
 
         modelList = await Http.GetFromJsonAsync<SharedModelMySql[]>("api/MySql/ModelList");
 
+        defectLists = await Http.GetFromJsonAsync<SharedDetailDefectList[]>("api/SharedDetailDefectLists");
+
         hubConnection = new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
-        .Build();
+    .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+    .Build();
 
         hubConnection.On("ReceiveMessage", () =>
         {
