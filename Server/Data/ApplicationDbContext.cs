@@ -23,5 +23,7 @@ namespace BlazorWASM_SignalR.Server.Data
 
         public DbSet<SharedDetailDefectList> SharedDetailDefectLists { get; set; }
 
+        public DbSet<SharedBakingRecord> SharedBakingRecords { get; set; }
+
     }
 }

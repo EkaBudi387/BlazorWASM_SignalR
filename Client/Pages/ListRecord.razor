@@ -30,29 +30,18 @@ else
         <tbody>
             @foreach (var record in listRecord)
             {
-                <tr>
-                    <td>@record.DateIn</td>
-                    <td>@record.SA_SN</td>
+            <tr>
+                <td>@record.DateIn</td>
+                <td>@record.SA_SN</td>
+                <td>@record.SA_PN</td>
+                <td>@record.Defect_Item</td>
+                <td>@record.Detail_Defect</td>
 
-
-                    @foreach (var _ in modelList)
-                    {
-                        if (_.SA_SN == record.SA_SN)
-                        {
-
-                            <td>@_.SA_PN</td>
-                            <td>@_.State</td>
-
-                            break;
-                        }
-                    }
-                    <td>@record.Detail_Defect</td>
-
-                    <td>
-                        <a href="/editRecord/@record.No">Edit</a>
-                        <a href="/deleteRecord/@record.No">Delete</a>
-                    </td>
-                </tr>
+                <td>
+                    <a href="/editRecord/@record.No">Edit</a>
+                    <a href="/deleteRecord/@record.No">Delete</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -64,14 +53,14 @@ else
 
     SharedDetailDefectList[] defectLists;
 
-    SharedModelMySql[] modelList;
+    
 
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
 
-        modelList = await Http.GetFromJsonAsync<SharedModelMySql[]>("api/MySql/ModelList");
+        
 
         defectLists = await Http.GetFromJsonAsync<SharedDetailDefectList[]>("api/SharedDetailDefectLists");
 

@@ -18,6 +18,10 @@ namespace BlazorWASM_SignalR.Shared
 
         public string SA_SN { get; set; }
 
+        public string SA_PN { get; set; }
+
+        public string Defect_Item { get; set; }
+
         public string Detail_Defect { get; set; }
 
 

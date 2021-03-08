@@ -32,6 +32,8 @@
 
 @code {
 
+    SharedModelMySql[] modelList;
+
     RecordDetails record = new RecordDetails();
 
     private HubConnection hubConnection;
@@ -39,9 +41,11 @@
     protected override async Task OnInitializedAsync()
     {
 
+        modelList = await Http.GetFromJsonAsync<SharedModelMySql[]>("api/MySql/ModelList");
+
         hubConnection = new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
-        .Build();
+    .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+    .Build();
 
         await hubConnection.StartAsync();
 
@@ -54,10 +58,20 @@
     protected async Task CreateRecord()
     {
         record.DateIn = DateTime.Now;
+
+        foreach(var _ in modelList)
+        {
+            if(record.SA_SN == _.SA_SN)
+            {
+                record.SA_PN = _.SA_PN;
+                record.Defect_Item = _.State;
+            }
+        }
+
         await Http.PostAsJsonAsync("api/RecordDetails", record);
         if (IsConnected) await SendMessage();
-        NavigationManager.NavigateTo("listRecord");
 
+        NavigationManager.NavigateTo("listRecord");
     }
 
 
