@@ -31,6 +31,7 @@ namespace BlazorWASM_SignalR.Server
             services.AddSignalR();
 
             services.AddSingleton<IMySql, MySQLServices>();
+            services.AddSingleton<IMySqlPNA, MySQLPNAServices>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

@@ -1,9 +1,14 @@
 ﻿@page "/baking"
 
-@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorWASM_SignalR.Shared
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <h3>Baking Record</h3>
-<hr/>
+<hr />
+
 <form onsubmit="return false">
     <div class="row">
         <div class="col-md-8">
@@ -13,28 +18,89 @@
             </div>
         </div>
     </div>
-</form> 
-@foreach(string _ in scanned)
-{
-    <ul>
-        <li>@_</li>
-    </ul>
-}
+</form>
 
-    @code {
-
-        List<string> scanned = new List<string>();
-        string theValue;
-
-        protected void KeyboardEventHandler(KeyboardEventArgs args)
+<table class="table">
+    <thead>
+        <tr>
+            <th>DateIn</th>
+            <th>SN</th>
+            <th>PN</th>
+            <th>Lastest Reject</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _ in sharedBakingRecords)
         {
-            if (args.Key == "Enter")
-            {
-                scanned.Add(theValue);
-                theValue = "";
-            }
-            else
-            {
-            }
+        <tr>
+            <td>@_.DateIn</td>
+            <td>@_.SN</td>
+            <td>@_.PN</td>
+            <td>@_.Last_Bin_Code</td>
+            <td>
+                <button @onclick="Delete">Delete</button>
+            </td>
+        </tr>
         }
+    </tbody>
+
+</table>
+
+
+@code {
+
+    SharedModelMySqlPNA[] PNAmodelList;
+
+    List<SharedBakingRecord> sharedBakingRecords = new List<SharedBakingRecord>();
+
+    string theValue;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        PNAmodelList = await Http.GetFromJsonAsync<SharedModelMySqlPNA[]>("api/MySqlPNA/PNAModelList");
+
     }
+
+    protected async Task KeyboardEventHandler(KeyboardEventArgs args)
+    {
+        SharedBakingRecord bakingList = new SharedBakingRecord();
+
+        if (args.Key == "Enter")
+        {
+
+            bakingList.DateIn = DateTime.Now;
+
+            foreach (var _ in PNAmodelList)
+            {
+                if (theValue == _.SN)
+                {
+                    bakingList.PN = _.PN;
+                    bakingList.Last_Bin_Code = _.Remark;
+                    bakingList.SN = theValue;
+
+                    break;
+                }
+            }
+
+            sharedBakingRecords.Add(bakingList);
+
+            await Http.PostAsJsonAsync("api/SharedBakingRecords", bakingList);
+
+
+            theValue = "";
+        }
+        else
+        {
+
+        }
+
+    }
+
+    protected async Task Delete()
+    {
+        await Http.DeleteAsync("api/RecordDetails/");
+
+    }
+
+}
