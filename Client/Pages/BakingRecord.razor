@@ -1,32 +1,40 @@
-﻿@*@page "/baking"
+﻿@page "/baking"
+
+@inject IJSRuntime JSRuntime
 
 <h3>Baking Record</h3>
 <hr/>
-
 <form onsubmit="return false">
     <div class="row">
         <div class="col-md-8">
             <div class="form-group">
-                <label for="SA_SN" class="control-label">SA_SN</label>
-                <input for="SA_SN" class="form-control" @onkeydown="KeyboardEventHandler"/>
+                <label class="control-label">SN</label>
+                <input class="form-control" @onkeypress="KeyboardEventHandler" @bind-value="@theValue" @bind-value:event="oninput" />
             </div>
         </div>
     </div>
-</form>
-
+</form> 
+@foreach(string _ in scanned)
+{
+    <ul>
+        <li>@_</li>
+    </ul>
+}
 
     @code {
 
-        //protected async Task KeyboardEventHandler(KeyboardEventArgs args)
-        //{
-        //    if (args.Key == "Enter")
-        //    {
-        //        await
-        //    }
-        //    else
-        //    {
+        List<string> scanned = new List<string>();
+        string theValue;
 
-        //    }
-
-        //}
-    }*@
+        protected void KeyboardEventHandler(KeyboardEventArgs args)
+        {
+            if (args.Key == "Enter")
+            {
+                scanned.Add(theValue);
+                theValue = "";
+            }
+            else
+            {
+            }
+        }
+    }
