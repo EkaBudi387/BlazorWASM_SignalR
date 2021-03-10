@@ -1,13 +1,13 @@
 ﻿@page "/baking"
 
-@using Microsoft.AspNetCore.SignalR.Client
 @using BlazorWASM_SignalR.Shared
+
 
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
 <h3>Baking Record</h3>
-<hr />
+<hr/>
 
 <form onsubmit="return false">
     <div class="row">
@@ -20,43 +20,57 @@
     </div>
 </form>
 
-<table class="table table-bordered table-responsive-md table-striped text-center">
-    <thead>
-        <tr>
-            <th>DateIn</th>
-            <th>SN</th>
-            <th>PN</th>
-            <th>Lastest Reject</th>
-            <th>Remove</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var _ in sharedBakingRecords)
-        {
-        <tr>
-            <td>@_.DateIn</td>
-            <td>@_.SN</td>
-            <td>@_.PN</td>
-            <td>@_.Last_Bin_Code</td>
-            <td>
-                <span class="table-remove">
-                    <button
-                            type="submit"
-                            name="id"
-                            value="@_.SN"
-                            form="remove"
-                            asp-page-handler="Remove"
-                            class="btn btn-danger btn-rounded btn-sm my-0">
-                        Remove
-                    </button>
-                    </span>
-            </td>
-        </tr>
-        }
-    </tbody>
+<div class="card-body">
 
-</table>
+    <div id="table" class="table-editable">
+        <span class="table-add float-right mb-3 mr-2">
+            <a href="#!" class="text-success">
+                <i class="fas fa-plus fa-2x" aria-hidden="true"></i>
+            </a>
+        </span>
 
+        <table class="table table-bordered table-responsive-md table-striped text-center">
+            <thead>
+                <tr>
+                    <th>DateIn</th>
+                    <th>SN</th>
+                    <th>PN</th>
+                    <th>Lastest Reject</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var _ in sharedBakingRecords)
+                {
+                    <tr>
+                        <td>@_.DateIn</td>
+                        <td>@_.SN</td>
+                        <td>@_.PN</td>
+                        <td>@_.Last_Bin_Code</td>
+                        <td>
+                            <span class="table-remove">
+                                <button type="submit"
+                                        class="btn btn-danger btn-rounded btn-sm my-0"
+                                        @onclick="() => DeleteSN(_.SN)"
+                                        >
+                                    Remove
+                                </button>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<button type="submit"
+        class="btn btn-success btn-rounded btn-sm my-0"
+        @onclick="Submit"
+        >
+    Submit
+</button>
 
 @code {
 
@@ -73,7 +87,7 @@
 
     }
 
-    protected async Task KeyboardEventHandler(KeyboardEventArgs args)
+    protected void KeyboardEventHandler(KeyboardEventArgs args)
     {
         SharedBakingRecord bakingList = new SharedBakingRecord();
 
@@ -96,11 +110,9 @@
 
             sharedBakingRecords.Add(bakingList);
 
-            await Http.PostAsJsonAsync("api/SharedBakingRecords", bakingList);
-
-
             theValue = "";
         }
+
         else
         {
 
@@ -108,4 +120,18 @@
 
     }
 
+    public void DeleteSN(string SN)
+    {
+
+        sharedBakingRecords.RemoveAll(p => p.SN == SN);
+
+    }
+
+    protected async Task Submit()
+    {
+        foreach(var _ in sharedBakingRecords)
+        {
+            await Http.PostAsJsonAsync("api/SharedBakingRecords", _);
+        }
+    }
 }
