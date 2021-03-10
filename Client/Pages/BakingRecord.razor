@@ -20,13 +20,14 @@
     </div>
 </form>
 
-<table class="table">
+<table class="table table-bordered table-responsive-md table-striped text-center">
     <thead>
         <tr>
             <th>DateIn</th>
             <th>SN</th>
             <th>PN</th>
             <th>Lastest Reject</th>
+            <th>Remove</th>
         </tr>
     </thead>
     <tbody>
@@ -38,7 +39,17 @@
             <td>@_.PN</td>
             <td>@_.Last_Bin_Code</td>
             <td>
-                <button @onclick="Delete">Delete</button>
+                <span class="table-remove">
+                    <button
+                            type="submit"
+                            name="id"
+                            value="@_.SN"
+                            form="remove"
+                            asp-page-handler="Remove"
+                            class="btn btn-danger btn-rounded btn-sm my-0">
+                        Remove
+                    </button>
+                    </span>
             </td>
         </tr>
         }
@@ -94,12 +105,6 @@
         {
 
         }
-
-    }
-
-    protected async Task Delete()
-    {
-        await Http.DeleteAsync("api/RecordDetails/");
 
     }
 

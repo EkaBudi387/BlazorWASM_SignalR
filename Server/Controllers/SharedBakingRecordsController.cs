@@ -30,7 +30,7 @@ namespace BlazorWASM_SignalR.Server.Controllers
 
         // GET: api/SharedBakingRecords/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SharedBakingRecord>> GetSharedBakingRecord(string id)
+        public async Task<ActionResult<SharedBakingRecord>> GetSharedBakingRecord(int id)
         {
             var sharedBakingRecord = await _context.SharedBakingRecords.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace BlazorWASM_SignalR.Server.Controllers
         // PUT: api/SharedBakingRecords/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSharedBakingRecord(string id, SharedBakingRecord sharedBakingRecord)
+        public async Task<IActionResult> PutSharedBakingRecord(int id, SharedBakingRecord sharedBakingRecord)
         {
-            if (id != sharedBakingRecord.SN)
+            if (id != sharedBakingRecord.Id)
             {
                 return BadRequest();
             }
@@ -79,28 +79,14 @@ namespace BlazorWASM_SignalR.Server.Controllers
         public async Task<ActionResult<SharedBakingRecord>> PostSharedBakingRecord(SharedBakingRecord sharedBakingRecord)
         {
             _context.SharedBakingRecords.Add(sharedBakingRecord);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SharedBakingRecordExists(sharedBakingRecord.SN))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSharedBakingRecord", new { id = sharedBakingRecord.SN }, sharedBakingRecord);
+            return CreatedAtAction("GetSharedBakingRecord", new { id = sharedBakingRecord.Id }, sharedBakingRecord);
         }
 
         // DELETE: api/SharedBakingRecords/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSharedBakingRecord(string id)
+        public async Task<IActionResult> DeleteSharedBakingRecord(int id)
         {
             var sharedBakingRecord = await _context.SharedBakingRecords.FindAsync(id);
             if (sharedBakingRecord == null)
@@ -114,9 +100,9 @@ namespace BlazorWASM_SignalR.Server.Controllers
             return NoContent();
         }
 
-        private bool SharedBakingRecordExists(string id)
+        private bool SharedBakingRecordExists(int id)
         {
-            return _context.SharedBakingRecords.Any(e => e.SN == id);
+            return _context.SharedBakingRecords.Any(e => e.Id == id);
         }
     }
 }

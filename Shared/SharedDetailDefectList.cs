@@ -11,6 +11,7 @@ namespace BlazorWASM_SignalR.Shared
     {
         [Key]
 
+        public int Id { get; set; }
         public string DetailDefect { get; set; }
 
     }

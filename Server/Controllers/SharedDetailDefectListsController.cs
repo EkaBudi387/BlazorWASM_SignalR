@@ -30,7 +30,7 @@ namespace BlazorWASM_SignalR.Server.Controllers
 
         // GET: api/SharedDetailDefectLists/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SharedDetailDefectList>> GetSharedDetailDefectList(string id)
+        public async Task<ActionResult<SharedDetailDefectList>> GetSharedDetailDefectList(int id)
         {
             var sharedDetailDefectList = await _context.SharedDetailDefectLists.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace BlazorWASM_SignalR.Server.Controllers
         // PUT: api/SharedDetailDefectLists/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSharedDetailDefectList(string id, SharedDetailDefectList sharedDetailDefectList)
+        public async Task<IActionResult> PutSharedDetailDefectList(int id, SharedDetailDefectList sharedDetailDefectList)
         {
-            if (id != sharedDetailDefectList.DetailDefect)
+            if (id != sharedDetailDefectList.Id)
             {
                 return BadRequest();
             }
@@ -79,28 +79,14 @@ namespace BlazorWASM_SignalR.Server.Controllers
         public async Task<ActionResult<SharedDetailDefectList>> PostSharedDetailDefectList(SharedDetailDefectList sharedDetailDefectList)
         {
             _context.SharedDetailDefectLists.Add(sharedDetailDefectList);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SharedDetailDefectListExists(sharedDetailDefectList.DetailDefect))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSharedDetailDefectList", new { id = sharedDetailDefectList.DetailDefect }, sharedDetailDefectList);
+            return CreatedAtAction("GetSharedDetailDefectList", new { id = sharedDetailDefectList.Id }, sharedDetailDefectList);
         }
 
         // DELETE: api/SharedDetailDefectLists/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSharedDetailDefectList(string id)
+        public async Task<IActionResult> DeleteSharedDetailDefectList(int id)
         {
             var sharedDetailDefectList = await _context.SharedDetailDefectLists.FindAsync(id);
             if (sharedDetailDefectList == null)
@@ -114,9 +100,9 @@ namespace BlazorWASM_SignalR.Server.Controllers
             return NoContent();
         }
 
-        private bool SharedDetailDefectListExists(string id)
+        private bool SharedDetailDefectListExists(int id)
         {
-            return _context.SharedDetailDefectLists.Any(e => e.DetailDefect == id);
+            return _context.SharedDetailDefectLists.Any(e => e.Id == id);
         }
     }
 }
