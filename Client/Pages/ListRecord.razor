@@ -29,15 +29,15 @@ else
             @foreach (var record in listRecord)
             {
                 <tr>
-                    <td>@record.DateIn</td>
+                    <td>@record.IDT_00</td>
                     <td>@record.SA_SN</td>
                     <td>@record.SA_PN</td>
-                    <td>@record.Defect_Item</td>
-                    <td>@record.Detail_Defect</td>
+                    <td>@record.Prod_Def</td>
+                    <td>@record.DetDefect</td>
 
                     <td>
-                        <a href="/editRecord/@record.No">Edit</a>
-                        <a href="/deleteRecord/@record.No">Delete</a>
+                        <a href="/editRecord/@record.IfFASA_id">Edit</a>
+                        <a href="/deleteRecord/@record.IfFASA_id">Delete</a>
                     </td>
                 </tr>
             }
@@ -49,7 +49,7 @@ else
 
 @code {
 
-    RecordDetails[] listRecord;
+    InfoFASA[] listRecord;
 
     SharedDetailDefectList[] defectLists;
 
@@ -93,7 +93,7 @@ else
     protected async Task LoadData()
     {
 
-        listRecord = await Http.GetFromJsonAsync<RecordDetails[]>("api/RecordDetails");
+        listRecord = await Http.GetFromJsonAsync<InfoFASA[]>("api/InfoFASAs");
         StateHasChanged();
 
     }

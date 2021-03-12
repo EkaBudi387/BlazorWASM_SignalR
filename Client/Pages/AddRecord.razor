@@ -34,7 +34,7 @@
 
     SharedModelMySql[] modelList;
 
-    RecordDetails record = new RecordDetails();
+    InfoFASA record = new InfoFASA();
 
     private HubConnection hubConnection;
 
@@ -57,18 +57,18 @@
 
     protected async Task CreateRecord()
     {
-        record.DateIn = DateTime.Now;
+        record.IDT_00 = DateTime.Now;
 
         foreach(var _ in modelList)
         {
             if(record.SA_SN == _.SA_SN)
             {
                 record.SA_PN = _.SA_PN;
-                record.Defect_Item = _.State;
+                record.Prod_Def = _.State;
             }
         }
 
-        await Http.PostAsJsonAsync("api/RecordDetails", record);
+        await Http.PostAsJsonAsync("api/InfoFASAs", record);
         if (IsConnected) await SendMessage();
 
         NavigationManager.NavigateTo("listRecord");

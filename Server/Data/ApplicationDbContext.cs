@@ -19,7 +19,7 @@ namespace BlazorWASM_SignalR.Server.Data
         {
         }
 
-        public DbSet<RecordDetails> RecordDetails { get; set; }
+        public DbSet<InfoFASA> InfoFASAs { get; set; }
 
         public DbSet<SharedDetailDefectList> SharedDetailDefectLists { get; set; }
 

@@ -13,7 +13,7 @@
     <table class="table">
         <tr>
             <td>DateIn</td>
-            <td>@record.DateIn</td>
+            <td>@record.IDT_00</td>
         </tr>
         <tr>
             <td>SA_SN</td>
@@ -33,17 +33,17 @@
     [Parameter]
     public string No { get; set; }
 
-    RecordDetails record = new RecordDetails();
+    InfoFASA record = new InfoFASA();
 
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-        record = await Http.GetFromJsonAsync<RecordDetails>("api/RecordDetails/" + No);
+        record = await Http.GetFromJsonAsync<InfoFASA>("api/InfoFASAs/" + No);
 
-            hubConnection = new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
-        .Build();
+        hubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+    .Build();
 
         await hubConnection.StartAsync();
 
@@ -55,7 +55,7 @@
 
     protected async Task Delete()
     {
-        await Http.DeleteAsync("api/RecordDetails/" + No);
+        await Http.DeleteAsync("api/InfoFASAs/" + No);
         if (IsConnected) await SendMessage();
         NavigationManager.NavigateTo("listRecord");
 

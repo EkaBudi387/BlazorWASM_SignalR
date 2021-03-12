@@ -12,47 +12,47 @@ namespace BlazorWASM_SignalR.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecordDetailsController : ControllerBase
+    public class InfoFASAsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public RecordDetailsController(ApplicationDbContext context)
+        public InfoFASAsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/RecordDetails
+        // GET: api/InfoFASAs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecordDetails>>> GetRecordDetails()
+        public async Task<ActionResult<IEnumerable<InfoFASA>>> GetInfoFASAs()
         {
-            return await _context.RecordDetails.ToListAsync();
+            return await _context.InfoFASAs.ToListAsync();
         }
 
-        // GET: api/RecordDetails/5
+        // GET: api/InfoFASAs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RecordDetails>> GetRecordDetails(int id)
+        public async Task<ActionResult<InfoFASA>> GetInfoFASA(int id)
         {
-            var recordDetails = await _context.RecordDetails.FindAsync(id);
+            var infoFASA = await _context.InfoFASAs.FindAsync(id);
 
-            if (recordDetails == null)
+            if (infoFASA == null)
             {
                 return NotFound();
             }
 
-            return recordDetails;
+            return infoFASA;
         }
 
-        // PUT: api/RecordDetails/5
+        // PUT: api/InfoFASAs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRecordDetails(int id, RecordDetails recordDetails)
+        public async Task<IActionResult> PutInfoFASA(int id, InfoFASA infoFASA)
         {
-            if (id != recordDetails.No)
+            if (id != infoFASA.IfFASA_id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(recordDetails).State = EntityState.Modified;
+            _context.Entry(infoFASA).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace BlazorWASM_SignalR.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RecordDetailsExists(id))
+                if (!InfoFASAExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace BlazorWASM_SignalR.Server.Controllers
             return NoContent();
         }
 
-        // POST: api/RecordDetails
+        // POST: api/InfoFASAs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RecordDetails>> PostRecordDetails(RecordDetails recordDetails)
+        public async Task<ActionResult<InfoFASA>> PostInfoFASA(InfoFASA infoFASA)
         {
-            _context.RecordDetails.Add(recordDetails);
+            _context.InfoFASAs.Add(infoFASA);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRecordDetails", new { id = recordDetails.No }, recordDetails);
+            return CreatedAtAction("GetInfoFASA", new { id = infoFASA.IfFASA_id }, infoFASA);
         }
 
-        // DELETE: api/RecordDetails/5
+        // DELETE: api/InfoFASAs/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecordDetails(int id)
+        public async Task<IActionResult> DeleteInfoFASA(int id)
         {
-            var recordDetails = await _context.RecordDetails.FindAsync(id);
-            if (recordDetails == null)
+            var infoFASA = await _context.InfoFASAs.FindAsync(id);
+            if (infoFASA == null)
             {
                 return NotFound();
             }
 
-            _context.RecordDetails.Remove(recordDetails);
+            _context.InfoFASAs.Remove(infoFASA);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool RecordDetailsExists(int id)
+        private bool InfoFASAExists(int id)
         {
-            return _context.RecordDetails.Any(e => e.No == id);
+            return _context.InfoFASAs.Any(e => e.IfFASA_id == id);
         }
     }
 }
