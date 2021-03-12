@@ -6,7 +6,20 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<h2>Record Details</h2>
+<h2>Nvidia SA Record</h2>
+
+<style>
+    .listTweets {
+        overflow: scroll;
+        width: 1000px;
+    }
+
+    .table_wrapper {
+        display: block;
+        white-space: nowrap;
+    }
+</style>
+
 
 @if (listRecord == null)
 {
@@ -14,46 +27,80 @@
 }
 else
 {
-    <table class="table is-bordered is-narrow is-striped">
-        <thead>
-            <tr>
-                <th>DateIn</th>
-                <th>SA_SN</th>
-                <th>SA_PN</th>
-                <th>Defect Item</th>
-                <th>Detail Defect</th>
-                <th>Edit/Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var record in listRecord)
-            {
-                <tr>
-                    <td>@record.IDT_00</td>
-                    <td>@record.SA_SN</td>
-                    <td>@record.SA_PN</td>
-                    <td>@record.Prod_Def</td>
-                    <td>@record.DetDefect</td>
+    <div class="listTweets">
+        <div class="table_wrapper">
+            <table class="table is-bordered is-narrow is-striped is-clipped">
+                <thead>
+                    <tr>
+                        <th>DateIn</th>
+                        <th>SA_SN</th>
+                        <th>SA_PN</th>
+                        <th>Defect Item</th>
+                        <th>Detail Defect</th>
+                        <th>DateIn</th>
+                        <th>SA_SN</th>
+                        <th>SA_PN</th>
+                        <th>Defect Item</th>
+                        <th>Detail Defect</th>
+                        <th>Edit / Remove</th>
 
-                    <td>
-                        <a href="/editRecord/@record.IfFASA_id">Edit</a>
-                        <a href="/deleteRecord/@record.IfFASA_id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in listRecord)
+                    {
+                    <tr>
+                        <td>@record.IDT_00</td>
+                        <td>@record.SA_SN</td>
+                        <td>@record.SA_PN</td>
+                        <td>@record.Prod_Def</td>
+                        <td>@record.DetDefect</td>
+                        <td>@record.IDT_00</td>
+                        <td>@record.SA_SN</td>
+                        <td>@record.SA_PN</td>
+                        <td>@record.Prod_Def</td>
+                        <td>@record.DetDefect</td>
+                        <td>
+                            <span class="table-remove">
+                                <button type="submit"
+                                        class="btn btn-primary btn-rounded btn-sm my-0"
+                                        @onclick="() => EditRecord(record.IfFASA_id)">
+                                    Edit
+                                </button>
+                                <button type="submit"
+                                        class="btn btn-danger btn-rounded btn-sm my-0"
+                                        @onclick="() => modalCard.Show()">
+                                    Remove
+                                </button>
+                            </span>
+                        </td>
+                        <ModalCardComponent SN="@record.SA_SN" @ref="modalCard">
+                            <Control>
+                                <button class="button is-success" @onclick="(() => DeleteRecord(record.IfFASA_id))">OK</button>
+                            </Control>
+                        </ModalCardComponent>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br/>
 
-    <button type="button" class="btn btn-primary" @onclick="AddReject">Add</button>
+    <button type="button" class="btn btn-primary" @onclick="AddReject">Add Record</button>
 }
 
+
+
+
 @code {
+
+
+    private ModalCardComponent modalCard;
 
     InfoFASA[] listRecord;
 
     SharedDetailDefectList[] defectLists;
-
-
 
     private HubConnection hubConnection;
 
@@ -109,4 +156,17 @@ else
         NavigationManager.NavigateTo("/addRecord");
     }
 
+    private void EditRecord(int id)
+    {
+        NavigationManager.NavigateTo("/editRecord/" + id);
+    }
+
+    protected async Task DeleteRecord(int id)
+    {
+        await Http.DeleteAsync("api/InfoFASAs/" + id);
+
+        modalCard.Cancel();
+
+        await LoadData();
+    }
 }

@@ -1,0 +1,48 @@
+﻿@inject HttpClient Http
+@inject NavigationManager Navigate
+
+@if (display)
+{
+    <div class="modal is-active">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Delete Record</p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                '@SN' record will be deleted permanently.
+            </section>
+            <footer class="modal-card-foot">
+                @Control
+                <button class="button alert-danger" @onclick="(() => Cancel())">Cancel</button>
+            </footer>
+        </div>
+    </div>
+}
+
+@code {
+
+    private bool display = false;
+
+    [Parameter]
+    public string SN { get; set; }
+
+    [Parameter]
+    public RenderFragment Control { get; set; }
+
+
+    public void Show()
+    {
+        this.display = true;
+
+        StateHasChanged();
+    }
+
+    public void Cancel()
+    {
+        this.display = false;
+        StateHasChanged();
+    }
+
+}
