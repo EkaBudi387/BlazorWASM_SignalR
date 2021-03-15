@@ -53,7 +53,13 @@ namespace BlazorWASM_SignalR.Server.Services
                         {
                             SA_SN = reader["SA_SN"].ToString(),
                             SA_PN = reader["SA_PN"].ToString(),
-                            State = reader["State"].ToString()
+                            State = reader["State"].ToString(),
+                            SO    = reader["so"].ToString(),
+                            Staff = reader["Staff"].ToString(),
+                            Station = reader["Station"].ToString(),
+                            Line = reader["Line"].ToString(),
+                            Time = Convert.ToDateTime(reader["Time"].ToString()),
+                            Tool = reader["MACH_No"].ToString()
                         });
                     }
 

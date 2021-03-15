@@ -13,9 +13,11 @@ namespace BlazorWASM_SignalR.Shared
         [Key]
         public int IfFASA_id { get; set; }
 
-        //NG Prod
+        //Data Entry Details
         public DateTime? IDT_00 { get; set; }
         public string UserID_00 { get; set; }
+
+        //From MySQL
         public DateTime? Prod_IDT { get; set; }
         public string Proj { get; set; }
         public string SA_SN { get; set; }
@@ -34,20 +36,19 @@ namespace BlazorWASM_SignalR.Shared
         //Failure Analysis
         public DateTime? IDT_01 { get; set; }
         public string UserID_01 { get; set; }
-        public string ReworkBy { get; set; }
         public string DetDefect { get; set; }
         public string DefArea { get; set; }
-        public string FsBOMScrap_Id { get; set; }
+        public string FsRefScrap_Id { get; set; }
         public string Remarks_01 { get; set; }
 
 
         //CAPA - Corrective & preventive action
-        public DateTime IDT_02 { get; set; }
+        public DateTime? IDT_02 { get; set; }
         public string UserID_02 { get; set; }
 
 
         //Material, Man, Machine, method, mother-nature
-        public string M5 { get; set; }
+        public string M6 { get; set; }
         public string DefStation { get; set; }
         public string DefEmpID { get; set; }
         public string FsRefAct_Id { get; set; }

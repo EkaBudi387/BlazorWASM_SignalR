@@ -88,14 +88,13 @@ namespace BlazorWASM_SignalR.Server.Migrations
                     Scrap_Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IDT_01 = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserID_01 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReworkBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DetDefect = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DefArea = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FsBOMScrap_Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FsRefScrap_Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Remarks_01 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IDT_02 = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IDT_02 = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserID_02 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    M5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    M6 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DefStation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DefEmpID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FsRefAct_Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -109,6 +108,19 @@ namespace BlazorWASM_SignalR.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InfoFASAs", x => x.IfFASA_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "List_FA_DetDefects",
+                columns: table => new
+                {
+                    Id_FA_DetDefect = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FA_DetDefect = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_List_FA_DetDefects", x => x.Id_FA_DetDefect);
                 });
 
             migrationBuilder.CreateTable(
@@ -145,19 +157,6 @@ namespace BlazorWASM_SignalR.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SharedBakingRecords", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SharedDetailDefectLists",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DetailDefect = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SharedDetailDefectLists", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -356,13 +355,13 @@ namespace BlazorWASM_SignalR.Server.Migrations
                 name: "InfoFASAs");
 
             migrationBuilder.DropTable(
+                name: "List_FA_DetDefects");
+
+            migrationBuilder.DropTable(
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
                 name: "SharedBakingRecords");
-
-            migrationBuilder.DropTable(
-                name: "SharedDetailDefectLists");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

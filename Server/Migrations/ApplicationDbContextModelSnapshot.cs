@@ -16,7 +16,7 @@ namespace BlazorWASM_SignalR.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BlazorWASM_SignalR.Server.Models.ApplicationUser", b =>
@@ -106,13 +106,13 @@ namespace BlazorWASM_SignalR.Server.Migrations
                     b.Property<DateTime?>("Dt_Scrap")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FsBOMScrap_Id")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FsRefAct_Id")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FsRefFol_Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FsRefScrap_Id")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("IDT_00")
@@ -121,13 +121,13 @@ namespace BlazorWASM_SignalR.Server.Migrations
                     b.Property<DateTime?>("IDT_01")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("IDT_02")
+                    b.Property<DateTime?>("IDT_02")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("IDT_03")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("M5")
+                    b.Property<string>("M6")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PName")
@@ -163,9 +163,6 @@ namespace BlazorWASM_SignalR.Server.Migrations
                     b.Property<string>("Remarks_03")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReworkBy")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SA_PN")
                         .HasColumnType("nvarchar(max)");
 
@@ -198,6 +195,21 @@ namespace BlazorWASM_SignalR.Server.Migrations
                     b.ToTable("InfoFASAs");
                 });
 
+            modelBuilder.Entity("BlazorWASM_SignalR.Shared.List_FA_DetDefect", b =>
+                {
+                    b.Property<int>("Id_FA_DetDefect")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FA_DetDefect")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id_FA_DetDefect");
+
+                    b.ToTable("List_FA_DetDefects");
+                });
+
             modelBuilder.Entity("BlazorWASM_SignalR.Shared.SharedBakingRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -220,21 +232,6 @@ namespace BlazorWASM_SignalR.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SharedBakingRecords");
-                });
-
-            modelBuilder.Entity("BlazorWASM_SignalR.Shared.SharedDetailDefectList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DetailDefect")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SharedDetailDefectLists");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>

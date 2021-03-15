@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace BlazorWASM_SignalR.Shared
 {
-    public class SharedDetailDefectList
+    public class List_Proj
     {
         [Key]
-
-        public int Id { get; set; }
-        public string DetailDefect { get; set; }
-
+        public int Id_Proj { get; set; }
+        public string Proj_Name { get; set; }
+        public string Remarks { get; set; }
     }
 }

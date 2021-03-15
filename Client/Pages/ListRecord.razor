@@ -11,7 +11,7 @@
 <style>
     .listTweets {
         overflow: scroll;
-        width: 1000px;
+        width: 1300px;
     }
 
     .table_wrapper {
@@ -32,17 +32,45 @@ else
             <table class="table is-bordered is-narrow is-striped is-clipped">
                 <thead>
                     <tr>
-                        <th>DateIn</th>
-                        <th>SA_SN</th>
-                        <th>SA_PN</th>
-                        <th>Defect Item</th>
-                        <th>Detail Defect</th>
-                        <th>DateIn</th>
-                        <th>SA_SN</th>
-                        <th>SA_PN</th>
-                        <th>Defect Item</th>
-                        <th>Detail Defect</th>
-                        <th>Edit / Remove</th>
+                        <td>Update</td>
+                        <td>Date Reject </td>
+                        <td>Prod User ID</td>
+
+                        <td>Date In</td>
+                        <td>Project</td>
+                        <td>SN</td>
+                        <td>PN</td>
+                        <td>Product</td>
+                        <td>SO</td>
+                        <td>Line</td>
+                        <td>Station</td>
+                        <td>Defect Item</td>
+                        <td>Machine ID</td>
+                        <td>Operator ID</td>
+                        <td>Date Scrap</td>
+                        <td>Scrap Status</td>
+
+                        <td>FA Done Date</td>
+                        <td>FA Member</td>
+                        <td>Detail Defect</td>
+                        <td>Defect Area</td>
+                        <td>FA Scrap ID</td>
+                        <td>FA Remark</td>
+
+                        <td>Investigation Date</td>
+                        <td>PIC</td>
+
+                        <td>6M</td>
+                        <td>Defect Station</td>
+                        <td>Defect Employee ID</td>
+                        <td>Investigation Reference ID</td>
+                        <td>Investigation Remark</td>
+
+                        <td>Follow Up Date</td>
+                        <td>Follow Up PIC</td>
+                        <td>Follow Up Reference ID</td>
+                        <td>Follow UP Status</td>
+                        <td>Follow Up Remark</td>
 
                     </tr>
                 </thead>
@@ -50,30 +78,59 @@ else
                     @foreach (var record in listRecord)
                     {
                     <tr>
-                        <td>@record.IDT_00</td>
-                        <td>@record.SA_SN</td>
-                        <td>@record.SA_PN</td>
-                        <td>@record.Prod_Def</td>
-                        <td>@record.DetDefect</td>
-                        <td>@record.IDT_00</td>
-                        <td>@record.SA_SN</td>
-                        <td>@record.SA_PN</td>
-                        <td>@record.Prod_Def</td>
-                        <td>@record.DetDefect</td>
                         <td>
                             <span class="table-remove">
                                 <button type="submit"
                                         class="btn btn-primary btn-rounded btn-sm my-0"
                                         @onclick="() => EditRecord(record.IfFASA_id)">
-                                    Edit
+                                    E
                                 </button>
                                 <button type="submit"
                                         class="btn btn-danger btn-rounded btn-sm my-0"
                                         @onclick="() => modalCard.Show()">
-                                    Remove
+                                    R
                                 </button>
                             </span>
                         </td>
+                        <td>@Convert.ToDateTime(record.IDT_00).ToString("yyMMdd HHmm")</td>
+                        <td>@record.UserID_00</td>
+
+                        <td>@record.Prod_IDT</td>
+                        <td>@record.Proj</td>
+                        <td>@record.SA_SN</td>
+                        <td>@record.SA_PN</td>
+                        <td>@record.PName</td>
+                        <td>@record.SA_SO</td>
+                        <td>@record.Prod_Line</td>
+                        <td>@record.Prod_Station</td>
+                        <td>@record.Prod_Def</td>
+                        <td>@record.Prod_ToolID</td>
+                        <td>@record.Prod_OprID</td>
+                        <td>@record.Dt_Scrap</td>
+                        <td>@record.Scrap_Status</td>
+
+                        <td>@record.IDT_01</td>
+                        <td>@record.UserID_01</td>
+                        <td>@record.DetDefect</td>
+                        <td>@record.DefArea</td>
+                        <td>@record.FsRefScrap_Id</td>
+                        <td>@record.Remarks_01</td>
+
+                        <td>@record.IDT_02</td>
+                        <td>@record.UserID_02</td>
+
+                        <td>@record.M6</td>
+                        <td>@record.DefStation</td>
+                        <td>@record.DefEmpID</td>
+                        <td>@record.FsRefAct_Id</td>
+                        <td>@record.Remarks_02</td>
+
+                        <td>@record.IDT_03</td>
+                        <td>@record.UserID_03</td>
+                        <td>@record.FsRefFol_Id</td>
+                        <td>@record.StaFollow</td>
+                        <td>@record.Remarks_03</td>
+
                         <ModalCardComponent SN="@record.SA_SN" @ref="modalCard">
                             <Control>
                                 <button class="button is-success" @onclick="(() => DeleteRecord(record.IfFASA_id))">OK</button>
@@ -100,16 +157,10 @@ else
 
     InfoFASA[] listRecord;
 
-    SharedDetailDefectList[] defectLists;
-
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-
-
-
-        defectLists = await Http.GetFromJsonAsync<SharedDetailDefectList[]>("api/SharedDetailDefectLists");
 
         hubConnection = new HubConnectionBuilder()
     .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))

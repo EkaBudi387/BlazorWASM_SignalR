@@ -1,0 +1,135 @@
+﻿@page "/editListDetDefect"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorWASM_SignalR.Shared
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+    <style>
+        .listTweets {
+            overflow: scroll;
+            width: 400px;
+        }
+
+        .table_wrapper {
+            display: block;
+            white-space: nowrap;
+        }
+    </style>
+
+<h2>Update Detail Defect List</h2>
+<b>Input Detail Defect:</b>
+
+<form>
+    <input @bind-value="@newDefect.FA_DetDefect" @bind-value:event="oninput"/>
+    <button type="reset" @onclick="AddReject">Add List</button>
+</form>
+
+
+
+@if (listRecord == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="listTweets">
+        <div class="table_wrapper">
+            <table class="table is-bordered is-narrow is-striped is-clipped">
+                <thead>
+                    <tr>
+                        <td>Remove</td>
+                        <td>Detail Defect List</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var _ in listRecord)
+                    {
+                        <tr>
+                            <td>
+                                <span class="table-remove">
+                                    <button type="submit"
+                                            class="btn alert-danger btn-rounded btn-sm my-0"
+                                            @onclick="() => DeleteRecord(_.Id_FA_DetDefect)">
+                                        -
+                                    </button>
+                                </span>
+                            </td>
+                            <td>@_.FA_DetDefect</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+}
+
+@code {
+
+
+    List_FA_DetDefect[] listRecord;
+
+    List_FA_DetDefect newDefect = new List_FA_DetDefect();
+
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavigationManager.ToAbsoluteUri("/RecordHub"))
+        .Build();
+
+        hubConnection.On("ReceiveMessage", () =>
+        {
+
+            CallLoadData();
+            StateHasChanged();
+
+        });
+
+        await hubConnection.StartAsync();
+        await LoadData();
+
+    }
+
+    private void CallLoadData()
+    {
+        Task.Run(async () =>
+        {
+            await LoadData();
+        });
+    }
+
+
+    protected async Task LoadData()
+    {
+
+        listRecord = await Http.GetFromJsonAsync<List_FA_DetDefect[]>("api/List_FA_DetDefect");
+        StateHasChanged();
+
+    }
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
+
+    protected async Task AddReject()
+    {
+        await Http.PostAsJsonAsync("api/List_FA_DetDefect", newDefect);
+
+        await LoadData();
+    }
+
+    protected async Task DeleteRecord(int id)
+    {
+        await Http.DeleteAsync("api/List_FA_DetDefect/" + id);
+
+        await LoadData();
+    }
+}

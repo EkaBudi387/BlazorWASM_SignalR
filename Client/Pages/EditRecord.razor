@@ -44,10 +44,16 @@
             </div>
             <div class="form-group">
                 <label for="Detail Defect" class="control-label">Detail Defect</label>
+                &nbsp;
+                <button type="submit"
+                        class="btn btn-primary btn-rounded btn-sm my-0"
+                        @onclick="UpdateListDetDefect">
+                    Edit List
+                </button>
             </div>
         </div>
     </div>
-    @if (defectLists == null)
+    @if (list_FA_DetDefects == null)
     {
 
     }
@@ -56,12 +62,13 @@
         <div class="select-box">
             <select @bind="@record.DetDefect">
                 <option></option>
-                @foreach (var _ in defectLists)
+                @foreach (var _ in list_FA_DetDefects)
                 {
-                    <option>@_.DetailDefect</option>
+                    <option>@_.FA_DetDefect</option>
                 }
             </select>
         </div>
+    
     }
     <br />
     <div class="row">
@@ -78,15 +85,15 @@
     [Parameter]
     public string No { get; set; }
 
-    SharedDetailDefectList[] defectLists;
-
     InfoFASA record = new InfoFASA();
+
+    List_FA_DetDefect[] list_FA_DetDefects;
 
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-        defectLists = await Http.GetFromJsonAsync<SharedDetailDefectList[]>("api/SharedDetailDefectLists");
+        list_FA_DetDefects = await Http.GetFromJsonAsync<List_FA_DetDefect[]>("api/List_FA_DetDefect");
 
         record = await Http.GetFromJsonAsync<InfoFASA>("api/InfoFASAs/" + No);
 
@@ -123,6 +130,11 @@
     public void Dispose()
     {
         _ = hubConnection.DisposeAsync();
+    }
+
+    void UpdateListDetDefect()
+    {
+        NavigationManager.NavigateTo("editListDetDefect");
     }
 
 }
