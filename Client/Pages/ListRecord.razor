@@ -55,7 +55,7 @@ else
             <table class="table is-bordered is-narrow is-striped is-clipped">
                 <thead>
                     <tr>
-                        <td>Update</td>
+                        <td>Action</td>
                         <td>Date Reject </td>
                         <td>Prod User ID</td>
 
@@ -112,8 +112,9 @@ else
                                         </button>
                                         <button type="submit"
                                                 class="btn btn-danger btn-rounded btn-sm my-0"
-                                                @onclick="() => modalCard.Show()">
+                                                @onclick="(() => { modalCard.Show(); deleteParameter(record.SA_SN, record.IfFASA_id); })">
                                             R
+
                                         </button>
                                     </span>
                                 </td>
@@ -156,13 +157,75 @@ else
                                 <td>@record.StaFollow</td>
                                 <td>@record.Remarks_03</td>
 
-                                <ModalCardComponent SN="@record.SA_SN" @ref="modalCard">
-                                    <Control>
-                                        <button class="button is-success" @onclick="(() => DeleteRecord(record.IfFASA_id))">OK</button>
-                                    </Control>
-                                </ModalCardComponent>
+
                             </tr>
                         }
+                    }
+                    else
+                    {
+                        @*@foreach (var record in listRecord.Skip(Paging.NumOfItemsToSkip(CurrentPageNumber)).Take(Paging.NumOfItemsToTake(listRecord.Count())))
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="table-remove">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-rounded btn-sm my-0"
+                                                    @onclick="() => EditRecord(record.IfFASA_id)">
+                                                E
+                                            </button>
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-rounded btn-sm my-0"
+                                                    @onclick="() => modalCard.Show()">
+                                                R
+                                            </button>
+                                        </span>
+                                    </td>
+                                    <td>@Convert.ToDateTime(record.IDT_00).ToString("yyMMdd HHmm")</td>
+                                    <td>@record.UserID_00</td>
+
+                                    <td>@record.Prod_IDT</td>
+                                    <td>@record.Proj</td>
+                                    <td>@record.SA_SN</td>
+                                    <td>@record.SA_PN</td>
+                                    <td>@record.PName</td>
+                                    <td>@record.SA_SO</td>
+                                    <td>@record.Prod_Line</td>
+                                    <td>@record.Prod_Station</td>
+                                    <td>@record.Prod_Def</td>
+                                    <td>@record.Prod_ToolID</td>
+                                    <td>@record.Prod_OprID</td>
+                                    <td>@record.Dt_Scrap</td>
+                                    <td>@record.Scrap_Status</td>
+
+                                    <td>@record.IDT_01</td>
+                                    <td>@record.UserID_01</td>
+                                    <td>@record.DetDefect</td>
+                                    <td>@record.DefArea</td>
+                                    <td>@record.FsRefScrap_Id</td>
+                                    <td>@record.Remarks_01</td>
+
+                                    <td>@record.IDT_02</td>
+                                    <td>@record.UserID_02</td>
+
+                                    <td>@record.M6</td>
+                                    <td>@record.DefStation</td>
+                                    <td>@record.DefEmpID</td>
+                                    <td>@record.FsRefAct_Id</td>
+                                    <td>@record.Remarks_02</td>
+
+                                    <td>@record.IDT_03</td>
+                                    <td>@record.UserID_03</td>
+                                    <td>@record.FsRefFol_Id</td>
+                                    <td>@record.StaFollow</td>
+                                    <td>@record.Remarks_03</td>
+
+                                    <ModalCardComponent SN="@record.SA_SN" @ref="modalCard">
+                                        <Control>
+                                            <button class="button is-success" @onclick="(() => DeleteRecord(record.IfFASA_id))">OK</button>
+                                        </Control>
+                                    </ModalCardComponent>
+                                </tr>
+                            }*@
                     }
 
                 </tbody>
@@ -170,6 +233,12 @@ else
         </div>
     </div>
     <br />
+
+    <ModalCardComponent SN="@deleteSN" @ref="modalCard">
+        <Control>
+            <button class="button is-success" @onclick="(async () => { await DeleteRecord(deleteID); })">OK</button>
+        </Control>
+    </ModalCardComponent>
 
     <button type="button" class="btn btn-primary" @onclick="AddReject">Add Record</button>
 
@@ -179,43 +248,24 @@ else
 
     <button type="button" class="btn btn-primary" @onclick="Groupbysingleproperty">Droplist Filter SA_PN</button>
     <br />
-    <br/>
+    <br />
     <form>
 
         @if (listFilter != null)
         {
-            <input @oninput="filterInput" placeholder="Search..."/> <br/>
+            <input @oninput="filterInput" placeholder="Search..." /> <br />
 
             @foreach (var _ in listFilter)
             {
-                <input type="checkbox" @onchange="(EventArgs => { CheckboxClicked(_.Key, EventArgs.Value); })" />@_.Key<br />
+                <input type="checkbox" checked="checked" @onchange="(EventArgs => { CheckboxClicked(_.Key, EventArgs.Value); })" />@_.Key<br />
             }
             <button type="button">OK</button>
-            <button type="reset">Clear</button>
+            <button type="button" @onclick="filterClear">Clear</button>
         }
         else { }
 
     </form>
 
-    @theValue
-    @inputValue
-
-    @if (filteredRecord != null)
-    {
-        <ul>
-            @foreach (var _ in filteredRecord)
-            {
-                <li>
-                    @_.SA_SN
-                </li>
-            }
-        </ul>
-    }
-
-    else 
-    {
-        <span>Filtered Record is null</span>
-    }
 }
 
 
@@ -224,23 +274,28 @@ else
 
 @code {
 
-    private string theValue = null;
+    string deleteSN;
+    int deleteID;
 
     private string inputValue;
+
+    private void deleteParameter(string sn, int id)
+    {
+        deleteSN = sn;
+        deleteID = id;
+    }
 
     private void CheckboxClicked(string value, object checkedValue)
     {
         if ((bool)checkedValue)
         {
-            theValue = value;
 
-            filteredRecord = listRecord.Where(x => x.SA_PN.Contains(theValue)).ToList();
+            filteredRecord.AddRange(listRecord.Where(x => x.SA_PN.Contains(value)).ToList());
 
         }
         else
         {
-            theValue = "";
-            filteredRecord = listRecord.Where(x => !x.SA_PN.Contains(theValue)).ToList();
+            filteredRecord = filteredRecord.Where(x => !x.SA_PN.Contains(value)).ToList();
         }
     }
 
@@ -254,9 +309,18 @@ else
 
     }
 
+    private void filterClear()
+    {
+
+        filteredRecord = listRecord.ToList();
+
+        Groupbysingleproperty();
+
+    }
+
     public void Groupbysingleproperty()
     {
-        if(filteredRecord != null)
+        if (filteredRecord != null)
         {
             var grouping =
             from p in filteredRecord
@@ -307,6 +371,8 @@ else
         await hubConnection.StartAsync();
         await LoadData();
 
+        filteredRecord = listRecord.ToList();
+
     }
 
     private void CallLoadData()
@@ -322,6 +388,7 @@ else
     {
 
         listRecord = await Http.GetFromJsonAsync<InfoFASA[]>("api/InfoFASAs");
+
         StateHasChanged();
 
     }
@@ -346,9 +413,12 @@ else
     {
         await Http.DeleteAsync("api/InfoFASAs/" + id);
 
+        await LoadData();
+
+        filteredRecord = listRecord.ToList();
+
         modalCard.Cancel();
 
-        await LoadData();
     }
 
     public PageConfig Paging { get; set; } = new PageConfig
