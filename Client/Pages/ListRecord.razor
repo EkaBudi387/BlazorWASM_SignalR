@@ -98,69 +98,73 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var record in listRecord.Skip(Paging.NumOfItemsToSkip(CurrentPageNumber)).Take(Paging.NumOfItemsToTake(listRecord.Count())))
+                    @if (filteredRecord != null)
                     {
-                        <tr>
-                            <td>
-                                <span class="table-remove">
-                                    <button type="submit"
-                                            class="btn btn-primary btn-rounded btn-sm my-0"
-                                            @onclick="() => EditRecord(record.IfFASA_id)">
-                                        E
-                                    </button>
-                                    <button type="submit"
-                                            class="btn btn-danger btn-rounded btn-sm my-0"
-                                            @onclick="() => modalCard.Show()">
-                                        R
-                                    </button>
-                                </span>
-                            </td>
-                            <td>@Convert.ToDateTime(record.IDT_00).ToString("yyMMdd HHmm")</td>
-                            <td>@record.UserID_00</td>
+                        @foreach (var record in filteredRecord.Skip(Paging.NumOfItemsToSkip(CurrentPageNumber)).Take(Paging.NumOfItemsToTake(filteredRecord.Count())))
+                        {
+                            <tr>
+                                <td>
+                                    <span class="table-remove">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-rounded btn-sm my-0"
+                                                @onclick="() => EditRecord(record.IfFASA_id)">
+                                            E
+                                        </button>
+                                        <button type="submit"
+                                                class="btn btn-danger btn-rounded btn-sm my-0"
+                                                @onclick="() => modalCard.Show()">
+                                            R
+                                        </button>
+                                    </span>
+                                </td>
+                                <td>@Convert.ToDateTime(record.IDT_00).ToString("yyMMdd HHmm")</td>
+                                <td>@record.UserID_00</td>
 
-                            <td>@record.Prod_IDT</td>
-                            <td>@record.Proj</td>
-                            <td>@record.SA_SN</td>
-                            <td>@record.SA_PN</td>
-                            <td>@record.PName</td>
-                            <td>@record.SA_SO</td>
-                            <td>@record.Prod_Line</td>
-                            <td>@record.Prod_Station</td>
-                            <td>@record.Prod_Def</td>
-                            <td>@record.Prod_ToolID</td>
-                            <td>@record.Prod_OprID</td>
-                            <td>@record.Dt_Scrap</td>
-                            <td>@record.Scrap_Status</td>
+                                <td>@record.Prod_IDT</td>
+                                <td>@record.Proj</td>
+                                <td>@record.SA_SN</td>
+                                <td>@record.SA_PN</td>
+                                <td>@record.PName</td>
+                                <td>@record.SA_SO</td>
+                                <td>@record.Prod_Line</td>
+                                <td>@record.Prod_Station</td>
+                                <td>@record.Prod_Def</td>
+                                <td>@record.Prod_ToolID</td>
+                                <td>@record.Prod_OprID</td>
+                                <td>@record.Dt_Scrap</td>
+                                <td>@record.Scrap_Status</td>
 
-                            <td>@record.IDT_01</td>
-                            <td>@record.UserID_01</td>
-                            <td>@record.DetDefect</td>
-                            <td>@record.DefArea</td>
-                            <td>@record.FsRefScrap_Id</td>
-                            <td>@record.Remarks_01</td>
+                                <td>@record.IDT_01</td>
+                                <td>@record.UserID_01</td>
+                                <td>@record.DetDefect</td>
+                                <td>@record.DefArea</td>
+                                <td>@record.FsRefScrap_Id</td>
+                                <td>@record.Remarks_01</td>
 
-                            <td>@record.IDT_02</td>
-                            <td>@record.UserID_02</td>
+                                <td>@record.IDT_02</td>
+                                <td>@record.UserID_02</td>
 
-                            <td>@record.M6</td>
-                            <td>@record.DefStation</td>
-                            <td>@record.DefEmpID</td>
-                            <td>@record.FsRefAct_Id</td>
-                            <td>@record.Remarks_02</td>
+                                <td>@record.M6</td>
+                                <td>@record.DefStation</td>
+                                <td>@record.DefEmpID</td>
+                                <td>@record.FsRefAct_Id</td>
+                                <td>@record.Remarks_02</td>
 
-                            <td>@record.IDT_03</td>
-                            <td>@record.UserID_03</td>
-                            <td>@record.FsRefFol_Id</td>
-                            <td>@record.StaFollow</td>
-                            <td>@record.Remarks_03</td>
+                                <td>@record.IDT_03</td>
+                                <td>@record.UserID_03</td>
+                                <td>@record.FsRefFol_Id</td>
+                                <td>@record.StaFollow</td>
+                                <td>@record.Remarks_03</td>
 
-                            <ModalCardComponent SN="@record.SA_SN" @ref="modalCard">
-                                <Control>
-                                    <button class="button is-success" @onclick="(() => DeleteRecord(record.IfFASA_id))">OK</button>
-                                </Control>
-                            </ModalCardComponent>
-                        </tr>
+                                <ModalCardComponent SN="@record.SA_SN" @ref="modalCard">
+                                    <Control>
+                                        <button class="button is-success" @onclick="(() => DeleteRecord(record.IfFASA_id))">OK</button>
+                                    </Control>
+                                </ModalCardComponent>
+                            </tr>
+                        }
                     }
+
                 </tbody>
             </table>
         </div>
@@ -169,17 +173,119 @@ else
 
     <button type="button" class="btn btn-primary" @onclick="AddReject">Add Record</button>
 
+    <span>
+        &nbsp;
+    </span>
+
+    <button type="button" class="btn btn-primary" @onclick="Groupbysingleproperty">Droplist Filter SA_PN</button>
+    <br />
+    <br/>
+    <form>
+
+        @if (listFilter != null)
+        {
+            <input @oninput="filterInput" placeholder="Search..."/> <br/>
+
+            @foreach (var _ in listFilter)
+            {
+                <input type="checkbox" @onchange="(EventArgs => { CheckboxClicked(_.Key, EventArgs.Value); })" />@_.Key<br />
+            }
+            <button type="button">OK</button>
+            <button type="reset">Clear</button>
+        }
+        else { }
+
+    </form>
+
+    @theValue
+    @inputValue
+
+    @if (filteredRecord != null)
+    {
+        <ul>
+            @foreach (var _ in filteredRecord)
+            {
+                <li>
+                    @_.SA_SN
+                </li>
+            }
+        </ul>
+    }
+
+    else 
+    {
+        <span>Filtered Record is null</span>
+    }
 }
+
 
 
 
 
 @code {
 
+    private string theValue = null;
+
+    private string inputValue;
+
+    private void CheckboxClicked(string value, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            theValue = value;
+
+            filteredRecord = listRecord.Where(x => x.SA_PN.Contains(theValue)).ToList();
+
+        }
+        else
+        {
+            theValue = "";
+            filteredRecord = listRecord.Where(x => !x.SA_PN.Contains(theValue)).ToList();
+        }
+    }
+
+    private void filterInput(ChangeEventArgs changeEventArgs)
+    {
+        inputValue = changeEventArgs.Value.ToString();
+
+        filteredRecord = listRecord.Where(x => x.SA_PN.Contains(inputValue)).ToList();
+
+        Groupbysingleproperty();
+
+    }
+
+    public void Groupbysingleproperty()
+    {
+        if(filteredRecord != null)
+        {
+            var grouping =
+            from p in filteredRecord
+            group p by p.SA_PN into newgroup
+            orderby newgroup.Key
+            select newgroup;
+
+            listFilter = grouping;
+        }
+        else
+        {
+            var grouping =
+            from p in listRecord
+            group p by p.SA_PN into newgroup
+            orderby newgroup.Key
+            select newgroup;
+
+            listFilter = grouping;
+        }
+
+    }
+
+    IEnumerable<IGrouping<string, InfoFASA>> listFilter;
 
     private ModalCardComponent modalCard;
 
     InfoFASA[] listRecord;
+
+    List<InfoFASA> filteredRecord;
 
     private HubConnection hubConnection;
 
@@ -249,7 +355,7 @@ else
     {
         Enabled = true,
         CustomPager = false,
-        PageSize = 2
+        PageSize = 10
     };
 
     public int CurrentPageNumber { get; set; } = 1;
